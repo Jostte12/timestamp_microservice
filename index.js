@@ -24,7 +24,35 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+// Function that test the validation of the date
+const isInvalidDate = (date) => date.toUTCString() === "Invalid Date"
 
+app.get("/api/:date", function (req, res) {
+  
+  let d = new Date(req.params.date) ;
+
+  if(isInvalidDate(d)) {
+    d = new Date(+req.params.date)
+  }
+
+  if(isInvalidDate(d)) {
+    res.json({error: "Invalid Date"});
+    return;
+  }
+  
+  res.json({
+    unix: d.getTime(), 
+    utc: d.toUTCString() 
+  });
+  
+});
+
+app.get("/api", function (req, res) {
+  res.json({
+    unix: new Date().getTime(),
+    utc: new Date().toUTCString()
+  })
+})
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
